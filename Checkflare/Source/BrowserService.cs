@@ -9,7 +9,7 @@ public class BrowserService : IBrowserService
 	private IBrowser browser;
 	private IPage page;
 
-	private List<ScraperTask> tasks = new List<ScraperTask>();
+	private Dictionary<Guid, ScraperTask> tasks = new Dictionary<Guid, ScraperTask>();
 
 	public BrowserService(ILogger<BrowserService> logger)
 	{
@@ -18,6 +18,15 @@ public class BrowserService : IBrowserService
 		playwright = Playwright.CreateAsync().Result;
 		browser = playwright.Firefox.LaunchAsync(new BrowserTypeLaunchOptions() {Headless = false}).Result;
 		page = browser.NewPageAsync().Result;
+
+		Task.Run(async () =>
+		{
+			while (true)
+			{
+				await Loop();
+				Thread.Sleep(100);
+			}
+		});
 	}
 
 	public string GotoPage(string url, int delay)
@@ -29,13 +38,29 @@ public class BrowserService : IBrowserService
 
 	public void AddTask(ScraperTask task)
 	{
-		tasks.Add(task);
-		TaskListUpdateEvent();
+		tasks.Add(task.Guid, task);
 	}
 
-	private void TaskListUpdateEvent()
+	public ScraperTask? GetTask(Guid guid)
 	{
+		tasks.TryGetValue(guid, out ScraperTask? task);
+		return task;
+	}
+
+	private async Task Loop()
+	{
+		// If all tasks are not status 0, then they are all completed (200 for ok, 404 for not found, etc)
+		if (tasks.All(t => t.Value.Status != 0))
+			return;
+
+		ScraperTask task = tasks.First(t => t.Value.Status == 0).Value;
 		
+		IResponse response = (await page.GotoAsync(task.Url))!;
+		Thread.Sleep(2500);
+
+		task.Status = response.Status;
+		task.Html = await page.ContentAsync();
+		task.CompletionTime = DateTime.Now;
 	}
 
 }

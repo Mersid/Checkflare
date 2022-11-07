@@ -9,10 +9,10 @@ public class ScraperTask
 		Url = url;
 	}
 	
-	public Guid Guid;
-	public string Url;
+	public Guid Guid { get; set; }
+	public string Url { get; set; }
 
-	public int Status;
-	public DateTime CompletionTime;
-	public string? Html;
+	public int Status { get; set; }
+	public DateTime CompletionTime { get; set; }
+	public string? Html { get; set; }
 }

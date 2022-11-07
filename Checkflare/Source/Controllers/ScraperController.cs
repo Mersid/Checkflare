@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Text.Json;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Checkflare.Controllers;
 
@@ -7,10 +8,12 @@ namespace Checkflare.Controllers;
 public class ScraperController : ControllerBase
 {
 	private readonly IBrowserService browserService;
+	private readonly ILogger<ScraperController> logger;
 
-	public ScraperController(IBrowserService browserService)
+	public ScraperController(IBrowserService browserService, ILogger<ScraperController> logger)
 	{
 		this.browserService = browserService;
+		this.logger = logger;
 	}
 
 	/// <summary>
@@ -48,7 +51,23 @@ public class ScraperController : ControllerBase
 	[Route("[action]")]
 	public IActionResult SubmitTask(string url)
 	{
+		ScraperTask t = new ScraperTask(url);
+		browserService.AddTask(t);
+
+		return Accepted(t.Guid);
+	}
+
+	[HttpGet]
+	[Route("[action]/{guid:guid}")]
+	public IActionResult GetResult(Guid guid)
+	{
+		ScraperTask? task = browserService.GetTask(guid);
+		if (task is null)
+			return NotFound();
+
+		if (task.Status == 0)
+			return new StatusCodeResult(StatusCodes.Status503ServiceUnavailable);
 		
-		return Ok(Guid.NewGuid());
+		return Ok(task);
 	}
 }
