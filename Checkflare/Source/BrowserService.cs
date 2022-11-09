@@ -1,4 +1,5 @@
-﻿using Microsoft.Playwright;
+﻿using Checkflare.Models;
+using Microsoft.Playwright;
 
 namespace Checkflare;
 
@@ -12,7 +13,7 @@ public class BrowserService : IBrowserService
 	private Dictionary<Guid, ScraperTask> tasks = new Dictionary<Guid, ScraperTask>();
 
 	public BrowserService(ILogger<BrowserService> logger)
-	{ // TODO: JSON tokens.
+	{
 		this.logger = logger;
 		logger.LogInformation("Browser service created");
 		playwright = Playwright.CreateAsync().Result;

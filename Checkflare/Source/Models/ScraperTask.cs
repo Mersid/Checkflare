@@ -1,4 +1,4 @@
-﻿namespace Checkflare;
+﻿namespace Checkflare.Models;
 
 public class ScraperTask
 {

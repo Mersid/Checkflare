@@ -1,4 +1,6 @@
-﻿namespace Checkflare;
+﻿using Checkflare.Models;
+
+namespace Checkflare;
 
 public interface IBrowserService
 {

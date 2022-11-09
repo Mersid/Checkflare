@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using Checkflare.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Checkflare.Controllers;
@@ -62,7 +63,7 @@ public class ScraperController : ControllerBase
 		ScraperTask t = new ScraperTask(url);
 		browserService.AddTask(t);
 
-		return Accepted(t.Guid);
+		return Accepted(new ResponseToken() {token = t.Guid});
 	}
 
 	[HttpGet]
