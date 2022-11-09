@@ -17,4 +17,5 @@ RUN dotnet publish "Checkflare.csproj" -c Release -o /app/publish
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "Checkflare.dll"]
+EXPOSE 3000
+ENTRYPOINT ["dotnet", "Checkflare.dll", "--urls \"http://localhost:3000\""]
