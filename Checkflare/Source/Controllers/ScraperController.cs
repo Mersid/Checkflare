@@ -42,6 +42,14 @@ public class ScraperController : ControllerBase
 		}
 	}
 
+	[HttpGet]
+	[Route("[action]")]
+	public IActionResult Ping()
+	{
+		logger.LogInformation("Ping endpoint hit!");
+		return Ok("Pong!");
+	}
+
 	/// <summary>
 	/// Submits a new task to scrape the requested webpage
 	/// </summary>

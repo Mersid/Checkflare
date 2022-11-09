@@ -12,7 +12,7 @@ public class BrowserService : IBrowserService
 	private Dictionary<Guid, ScraperTask> tasks = new Dictionary<Guid, ScraperTask>();
 
 	public BrowserService(ILogger<BrowserService> logger)
-	{ // JSON tokens.
+	{ // TODO: JSON tokens.
 		this.logger = logger;
 		logger.LogInformation("Browser service created");
 		playwright = Playwright.CreateAsync().Result;
