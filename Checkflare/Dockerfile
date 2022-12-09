@@ -28,4 +28,5 @@ EXPOSE 5000
 
 ENTRYPOINT ["./startup.sh"]
 
+# Build this docker image with "docker build -t checkflare ."
 # Run this docker image with "docker run -p 6080:80 -p 5000:5000 checkflare"
