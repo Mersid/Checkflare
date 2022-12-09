@@ -38,7 +38,7 @@ public class ScraperController : ControllerBase
 		}
 		catch (Exception e)
 		{
-			Console.WriteLine(e);
+			logger.LogInformation("Something went wrong!");
 			return BadRequest("Nope!");
 		}
 	}
@@ -51,17 +51,27 @@ public class ScraperController : ControllerBase
 		return Ok("Pong!");
 	}
 
+	[HttpGet]
+	[Route("[action]")]
+	public IActionResult GetStats()
+	{
+		return Ok(browserService.GetStats());
+	}
+
 	/// <summary>
 	/// Submits a new task to scrape the requested webpage
 	/// </summary>
 	/// <param name="url">The URL of the webpage to extract HTML data from</param>
 	/// <returns>A token</returns>
 	[HttpPost]
+	[HttpGet]
 	[Route("[action]")]
 	public IActionResult SubmitTask(string url)
 	{
 		ScraperTask t = new ScraperTask(url);
 		browserService.AddTask(t);
+		
+		logger.LogInformation("Added new task: {}", JsonSerializer.Serialize(t));
 
 		return Accepted(new ResponseToken() {token = t.Guid});
 	}
@@ -71,6 +81,9 @@ public class ScraperController : ControllerBase
 	public IActionResult GetResult(Guid guid)
 	{
 		ScraperTask? task = browserService.GetTask(guid);
+		
+		logger.LogInformation("Getting result for {}: {}", guid, JsonSerializer.Serialize(task));
+		
 		if (task is null)
 			return NotFound();
 
