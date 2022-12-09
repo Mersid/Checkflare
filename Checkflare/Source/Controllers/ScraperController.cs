@@ -23,6 +23,7 @@ public class ScraperController : ControllerBase
 	/// <param name="url">URL to read HTML from</param>
 	/// <param name="delay">Time to wait after elements are loaded before returning the HTML, in milliseconds</param>
 	[HttpGet]
+	[Obsolete("Use SubmitTask and GetResult instead, as they support concurrent usage")]
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	public IActionResult Get(string url, int delay)
